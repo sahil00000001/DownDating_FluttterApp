@@ -20,32 +20,32 @@ class SplashScreenState extends State<SplashScreen>
   late AnimationController _instagramController;
   late Animation<Offset> _instagramSlideAnimation;
   late Animation<double> _instagramFadeAnimation;
-  
+
   bool _showLoginForm = false;
   bool _showInstagramButton = false;
 
   @override
   void initState() {
     super.initState();
-    
+
     // Main animation controller - total duration 1800ms for smoother timing
     _mainController = AnimationController(
       duration: const Duration(milliseconds: 1800),
       vsync: this,
     );
-    
+
     // Slide controller for login form
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     // Instagram button animation controller
     _instagramController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     // Phase A: Color Fill Animation (0ms - 1800ms) - Right → Left, slower & smoother
     // Interval: 0.0 to 1.0 (full duration)
     _colorFillAnimation = Tween<double>(
@@ -53,9 +53,10 @@ class SplashScreenState extends State<SplashScreen>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _mainController,
-      curve: const Interval(0.0, 1.0, curve: Curves.easeOutQuad), // easeOutQuad as per spec
+      curve: const Interval(0.0, 1.0,
+          curve: Curves.easeOutQuad), // easeOutQuad as per spec
     ));
-    
+
     // Phase B: Lift & Shrink Animation (400ms - 1800ms) - starts earlier for smooth motion
     // Interval: 0.222 to 1.0 (400/1800 to 1800/1800)
     _liftShrinkAnimation = Tween<double>(
@@ -63,39 +64,40 @@ class SplashScreenState extends State<SplashScreen>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _mainController,
-      curve: const Interval(0.222, 1.0, curve: Curves.easeInOutCubic), // continuous smooth motion
+      curve: const Interval(0.222, 1.0,
+          curve: Curves.easeInOutCubic), // continuous smooth motion
     ));
-    
+
     // Logo scale: 2.4 → 1.8 (huge initially, still very large finally - 25% shrink)
     _logoScaleAnimation = Tween<double>(
       begin: 3.4,
       end: 2.8,
     ).animate(_liftShrinkAnimation);
-    
-    // Title scale: 1.00 → 0.95  
+
+    // Title scale: 1.00 → 0.95
     _titleScaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.95,
     ).animate(_liftShrinkAnimation);
-    
+
     // Login form slide animation - adjusted for higher position
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0.0, 0.3), // Start slightly below final position
-      end: const Offset(0.0, 0.0),   // End at final position
+      end: const Offset(0.0, 0.0), // End at final position
     ).animate(CurvedAnimation(
       parent: _slideController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     // Instagram button slide up animation
     _instagramSlideAnimation = Tween<Offset>(
       begin: const Offset(0.0, 0.5), // Start slightly below
-      end: const Offset(0.0, 0.0),   // End in final position
+      end: const Offset(0.0, 0.0), // End in final position
     ).animate(CurvedAnimation(
       parent: _instagramController,
       curve: Curves.easeOutBack, // Bouncy effect
     ));
-    
+
     // Instagram button fade animation
     _instagramFadeAnimation = Tween<double>(
       begin: 0.0,
@@ -104,21 +106,21 @@ class SplashScreenState extends State<SplashScreen>
       parent: _instagramController,
       curve: Curves.easeOut,
     ));
-    
+
     _startAnimationSequence();
   }
 
   void _startAnimationSequence() async {
     // Start the main animation immediately
     _mainController.forward();
-    
+
     // Wait for main animation to complete, then show login form
     await Future.delayed(const Duration(milliseconds: 1900));
     setState(() {
       _showLoginForm = true;
     });
     _slideController.forward();
-    
+
     // Wait for login form to appear, then animate Instagram button
     await Future.delayed(const Duration(milliseconds: 400));
     setState(() {
@@ -139,7 +141,7 @@ class SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final safeAreaTop = MediaQuery.of(context).padding.top;
-    
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 25, 25, 25),
       body: Stack(
@@ -149,14 +151,18 @@ class SplashScreenState extends State<SplashScreen>
             animation: _mainController,
             builder: (context, child) {
               // Calculate exact final position: logo top edge at safe-area + 80dp (much more space above)
-              final logoSize = 100 * _logoScaleAnimation.value; // Current logo size
-              final finalLogoTop = safeAreaTop + 170; // Target position - generous space above
+              final logoSize =
+                  100 * _logoScaleAnimation.value; // Current logo size
+              final finalLogoTop =
+                  safeAreaTop + 170; // Target position - generous space above
               final screenCenter = screenHeight / 2;
-              
+
               // Calculate current position - interpolate from center to exact top position
-              final currentLogoTop = screenCenter - (logoSize / 2) + 
-                                   (_liftShrinkAnimation.value * (finalLogoTop - (screenCenter - logoSize / 2)));
-              
+              final currentLogoTop = screenCenter -
+                  (logoSize / 2) +
+                  (_liftShrinkAnimation.value *
+                      (finalLogoTop - (screenCenter - logoSize / 2)));
+
               return Positioned(
                 left: 0,
                 right: 0,
@@ -168,7 +174,8 @@ class SplashScreenState extends State<SplashScreen>
                     Transform.scale(
                       scale: _logoScaleAnimation.value,
                       child: SizedBox(
-                        width: 100, // Base size - scaled to 2.4× initially (240px)
+                        width:
+                            100, // Base size - scaled to 2.4× initially (240px)
                         height: 100,
                         child: Image.asset(
                           'assets/images/logo.png',
@@ -176,19 +183,22 @@ class SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-                    
+
                     // Dynamic spacing: 25% of current logo height → 20dp fixed finally
                     SizedBox(
-                      height: (100 * _logoScaleAnimation.value * 0.25) * 
-                             (1.0 - _liftShrinkAnimation.value) + 
-                             (80 * _liftShrinkAnimation.value), // logoHeight * 0.25 → 20dp fixed
+                      height: (100 * _logoScaleAnimation.value * 0.25) *
+                              (1.0 - _liftShrinkAnimation.value) +
+                          (80 *
+                              _liftShrinkAnimation
+                                  .value), // logoHeight * 0.25 → 20dp fixed
                     ),
-                    
+
                     // Title with scale and color animation
                     Transform.scale(
                       scale: _titleScaleAnimation.value,
                       child: CustomPaint(
-                        painter: DownDatingTextPainter(_colorFillAnimation.value),
+                        painter:
+                            DownDatingTextPainter(_colorFillAnimation.value),
                         size: const Size(250, 40),
                       ),
                     ),
@@ -197,13 +207,14 @@ class SplashScreenState extends State<SplashScreen>
               );
             },
           ),
-          
+
           // Login form positioned much closer to DownDating title
           if (_showLoginForm)
             Positioned(
               left: 32,
               right: 32,
-              top: screenHeight * 0.55, // Move much further down - more space from DownDating title
+              top: screenHeight *
+                  0.55, // Move much further down - more space from DownDating title
               child: SlideTransition(
                 position: _slideAnimation,
                 child: Column(
@@ -219,12 +230,7 @@ class SplashScreenState extends State<SplashScreen>
                             width: double.infinity,
                             height: 56,
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const EnterPhoneNumberScreen()),
-                                );
-                              },
+                              onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
                                 foregroundColor: Colors.black,
@@ -276,27 +282,46 @@ class SplashScreenState extends State<SplashScreen>
                           ),
                         ),
                       ),
-                    
+
                     const SizedBox(height: 24),
-                    
-                    // Use Phone Number
-                    TextButton(
-                      onPressed: () {
-                      },
-                      child: const Text(
-                        'Use Phone Number',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.white,
+
+                    // Use Phone Numberz
+                    // Phone Number button with white border outline
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const EnterPhoneNumberScreen()),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          side: const BorderSide(
+                            color: Colors.white,
+                            width: 1.5,
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Use Phone Number',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
-                    
                     const SizedBox(height: 40),
-                    
+
                     // Divider with "Already a Member?"
                     Row(
                       children: [
@@ -326,13 +351,12 @@ class SplashScreenState extends State<SplashScreen>
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Sign in text
                     GestureDetector(
-                      onTap: () {
-                      },
+                      onTap: () {},
                       child: RichText(
                         text: const TextSpan(
                           text: 'Already have an account? ',
@@ -354,9 +378,9 @@ class SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 50),
-                    
+
                     // Terms and Privacy
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -393,13 +417,13 @@ class SplashScreenState extends State<SplashScreen>
 // Custom painter for DownDating text with Right→Left color fill as per updated spec
 class DownDatingTextPainter extends CustomPainter {
   final double animationValue;
-  
+
   DownDatingTextPainter(this.animationValue);
 
   @override
   void paint(Canvas canvas, Size size) {
     double centerX = size.width / 2;
-    
+
     // "Down" - always white (#FFFFFF) as per spec
     TextPainter downPainter = TextPainter(
       text: const TextSpan(
@@ -414,7 +438,7 @@ class DownDatingTextPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     downPainter.layout();
-    
+
     // Calculate total width to center the entire "DownDating"
     TextPainter totalTextPainter = TextPainter(
       text: const TextSpan(
@@ -429,17 +453,17 @@ class DownDatingTextPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     totalTextPainter.layout();
-    
+
     // Start position to center the entire text
     double startX = centerX - (totalTextPainter.width / 2);
-    
+
     // Paint "Down" - always white
     downPainter.paint(canvas, Offset(startX, 0));
-    
+
     // Paint "Dating" with RIGHT → LEFT color fill as per updated spec
     String datingText = 'Dating';
     List<String> letters = datingText.split('');
-    
+
     double currentX = startX + downPainter.width;
     for (int i = 0; i < letters.length; i++) {
       // RIGHT → LEFT animation: letters fill from rightmost (index 5) to leftmost (index 0)
@@ -447,10 +471,11 @@ class DownDatingTextPainter extends CustomPainter {
       int reverseIndex = letters.length - 1 - i;
       double letterProgress = (animationValue * letters.length) - reverseIndex;
       letterProgress = letterProgress.clamp(0.0, 1.0);
-      
+
       // Color lerp from white to red RGBA(255, 0, 0, 255)
-      Color letterColor = Color.lerp(Colors.white, const Color.fromRGBO(255, 0, 0, 1.0), letterProgress)!;
-      
+      Color letterColor = Color.lerp(
+          Colors.white, const Color.fromRGBO(255, 0, 0, 1.0), letterProgress)!;
+
       TextPainter letterPainter = TextPainter(
         text: TextSpan(
           text: letters[i],
@@ -471,7 +496,7 @@ class DownDatingTextPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return oldDelegate is! DownDatingTextPainter || 
-           oldDelegate.animationValue != animationValue;
+    return oldDelegate is! DownDatingTextPainter ||
+        oldDelegate.animationValue != animationValue;
   }
 }

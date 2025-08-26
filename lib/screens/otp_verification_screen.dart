@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import 'personal_info_flow.dart'; // Import the new flow
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
@@ -62,6 +63,29 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
       // Move to previous field if current is empty
       focusNodes[index - 1].requestFocus();
     }
+  }
+
+  void _navigateToPersonalInfoFlow() {
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const PersonalInfoFlow(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 500),
+      ),
+    );
   }
 
   @override
@@ -169,7 +193,8 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       String otp = otpControllers.map((controller) => controller.text).join();
                       if (otp.length == 4) {
                         print('OTP entered: $otp');
-                        // Navigate to next screen or verify OTP
+                        // Navigate to personal info flow instead of next screen
+                        _navigateToPersonalInfoFlow();
                       } else {
                         // Show error or prompt to complete OTP
                         ScaffoldMessenger.of(context).showSnackBar(
