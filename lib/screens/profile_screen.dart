@@ -12,7 +12,8 @@ class ProfileScreenState extends State<ProfileScreen> {
     'name': 'Alex',
     'age': 24,
     'location': 'New York, NY',
-    'bio': 'Love traveling, photography, and good coffee ☕\nAlways up for an adventure! 🌟',
+    'bio':
+        'Love traveling, photography, and good coffee ☕\nAlways up for an adventure! 🌟',
     'interests': ['Travel', 'Photography', 'Coffee', 'Hiking', 'Music', 'Art'],
     'photos': 6, // Number of photos
   };
@@ -41,7 +42,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       size: 100,
                     ),
                   ),
-                  
+
                   // Gradient overlay
                   Container(
                     decoration: BoxDecoration(
@@ -55,7 +56,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  
+
                   // Profile info
                   Positioned(
                     bottom: 20,
@@ -105,7 +106,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
-          
+
           // Profile content
           SliverToBoxAdapter(
             child: Padding(
@@ -134,28 +135,28 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // About section
                   _buildSection(
                     'About Me',
                     Icons.person_outline,
                     _userProfile['bio'],
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Interests section
                   _buildInterestsSection(),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Photos section
                   _buildPhotosSection(),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Account options
                   _buildAccountOptions(),
                 ],
@@ -330,9 +331,21 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget _buildAccountOptions() {
     final options = [
       {'title': 'Discovery Settings', 'icon': Icons.tune, 'color': Colors.blue},
-      {'title': 'Notifications', 'icon': Icons.notifications_outlined, 'color': Colors.orange},
-      {'title': 'Privacy & Safety', 'icon': Icons.security, 'color': Colors.green},
-      {'title': 'Help & Support', 'icon': Icons.help_outline, 'color': Colors.purple},
+      {
+        'title': 'Notifications',
+        'icon': Icons.notifications_outlined,
+        'color': Colors.orange
+      },
+      {
+        'title': 'Privacy & Safety',
+        'icon': Icons.security,
+        'color': Colors.green
+      },
+      {
+        'title': 'Help & Support',
+        'icon': Icons.help_outline,
+        'color': Colors.purple
+      },
     ];
 
     return Column(
@@ -406,9 +419,9 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
           );
         }),
-        
+
         const SizedBox(height: 20),
-        
+
         // Logout button
         SizedBox(
           width: double.infinity,
@@ -451,7 +464,8 @@ class ProfileScreenState extends State<ProfileScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.edit, color: Colors.white),
-              title: const Text('Edit Profile', style: TextStyle(color: Colors.white)),
+              title: const Text('Edit Profile',
+                  style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.pop(context);
                 _showEditProfile();
@@ -459,14 +473,16 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.share, color: Colors.white),
-              title: const Text('Share Profile', style: TextStyle(color: Colors.white)),
+              title: const Text('Share Profile',
+                  style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(Icons.qr_code, color: Colors.white),
-              title: const Text('QR Code', style: TextStyle(color: Colors.white)),
+              title:
+                  const Text('QR Code', style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.pop(context);
               },

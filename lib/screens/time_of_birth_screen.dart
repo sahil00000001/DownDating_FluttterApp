@@ -9,30 +9,29 @@ class TimeOfBirthScreen extends StatefulWidget {
   TimeOfBirthScreenState createState() => TimeOfBirthScreenState();
 }
 
-class TimeOfBirthScreenState extends State<TimeOfBirthScreen> 
+class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
     with TickerProviderStateMixin {
-  
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   bool knowsTime = true; // Default to "I Know"
   String selectedPeriod = 'AM';
-  
+
   final TextEditingController hourController = TextEditingController();
   final TextEditingController minuteController = TextEditingController();
-  
+
   final FocusNode hourFocus = FocusNode();
   final FocusNode minuteFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -40,7 +39,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _animationController.forward();
   }
 
@@ -56,11 +55,11 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
 
   bool get isFormValid {
     if (!knowsTime) return true; // If they don't know, that's valid
-    
+
     return hourController.text.trim().isNotEmpty &&
-           minuteController.text.trim().isNotEmpty &&
-           hourController.text.trim().length <= 2 &&
-           minuteController.text.trim().length == 2;
+        minuteController.text.trim().isNotEmpty &&
+        hourController.text.trim().length <= 2 &&
+        minuteController.text.trim().length == 2;
   }
 
   @override
@@ -72,7 +71,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
         child: Column(
           children: [
             const SizedBox(height: 60),
-            
+
             // Clock icon - Centered and Large
             Center(
               child: Container(
@@ -89,9 +88,9 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 50),
-            
+
             // Title - Left aligned and larger
             Align(
               alignment: Alignment.centerLeft,
@@ -104,9 +103,9 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Know/Don't Know toggle - Improved design
             Container(
               constraints: const BoxConstraints(maxWidth: 320),
@@ -134,15 +133,14 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Time picker section - Only show if they know
-            if (knowsTime) 
-              _buildTimePickerSection(),
-            
+            if (knowsTime) _buildTimePickerSection(),
+
             const Spacer(),
-            
+
             // Next button
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
@@ -155,7 +153,8 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                     child: ElevatedButton(
                       onPressed: isFormValid ? _handleNext : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isFormValid ? Colors.white : Colors.grey[700],
+                        backgroundColor:
+                            isFormValid ? Colors.white : Colors.grey[700],
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
@@ -234,7 +233,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                     maxLength: 2,
                     onSubmitted: (_) => minuteFocus.requestFocus(),
                   ),
-                  
+
                   // Separator
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -247,7 +246,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                       ),
                     ),
                   ),
-                  
+
                   // Minute input
                   _buildTimeInput(
                     controller: minuteController,
@@ -260,9 +259,9 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                       }
                     },
                   ),
-                  
+
                   const SizedBox(width: 24),
-                  
+
                   // AM/PM selector
                   Column(
                     children: [
@@ -274,9 +273,9 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Helper text
             Text(
               'Enter your birth time in 12-hour format',
@@ -304,18 +303,18 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
       builder: (context, child) {
         bool hasText = controller.text.isNotEmpty;
         bool isFocused = focusNode.hasFocus;
-        
+
         return Container(
           width: 60,
           height: 70,
           decoration: BoxDecoration(
-            color: hasText || isFocused 
-                ? Colors.white.withOpacity(0.1) 
+            color: hasText || isFocused
+                ? Colors.white.withOpacity(0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: hasText 
-                  ? Colors.red 
+              color: hasText
+                  ? Colors.red
                   : (isFocused ? Colors.white : Colors.transparent),
               width: hasText || isFocused ? 2 : 0,
             ),
@@ -360,7 +359,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
 
   Widget _buildPeriodSelector(String period) {
     bool isSelected = selectedPeriod == period;
-    
+
     return GestureDetector(
       onTap: () => setState(() => selectedPeriod = period),
       child: AnimatedContainer(
@@ -397,7 +396,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
     } else {
       print('Time of birth: Unknown');
     }
-    
+
     // Navigate to next screen
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();
     flowState?.nextScreen();

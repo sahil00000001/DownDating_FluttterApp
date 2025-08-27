@@ -10,283 +10,307 @@ class SplashScreen extends StatefulWidget {
 
 class SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _mainController;
-  late Animation<double> _colorFillAnimation;
-  late Animation<double> _liftShrinkAnimation;
-  late Animation<double> _logoScaleAnimation;
-  late Animation<double> _titleScaleAnimation;
-  late AnimationController _slideController;
-  late Animation<Offset> _slideAnimation;
-  late AnimationController _instagramController;
-  late Animation<Offset> _instagramSlideAnimation;
-  late Animation<double> _instagramFadeAnimation;
+  // Animation controllers for the new sequence
+  late AnimationController _logoFadeController;
+  late AnimationController _titleController;
+  late AnimationController _logoMoveController;
+  late AnimationController _loginFormController;
 
+  // Logo fade animation
+  late Animation<double> _logoFadeAnimation;
+
+  // Title animations (including color fill)
+  late Animation<double> _titleFadeAnimation;
+  late Animation<Offset> _titleSlideAnimation;
+  late Animation<double> _colorFillAnimation; // Bring back color animation
+
+  // Logo move up animation - less dramatic movement
+  late Animation<Offset> _logoMoveAnimation;
+  
+  // Title move up animation - different amount than logo
+  late Animation<Offset> _titleMoveAnimation;
+
+  // Login form slide animation
+  late Animation<Offset> _loginFormSlideAnimation;
+
+  bool _showTitle = false;
   bool _showLoginForm = false;
-  bool _showInstagramButton = false;
 
   @override
   void initState() {
     super.initState();
 
-    // Main animation controller - total duration 1800ms for smoother timing
-    _mainController = AnimationController(
-      duration: const Duration(milliseconds: 1800),
+    // Step 1: Logo fade-in controller (0.8-1s)
+    _logoFadeController = AnimationController(
+      duration: const Duration(milliseconds: 900),
       vsync: this,
     );
 
-    // Slide controller for login form
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+    // Step 2: Title entry controller (longer duration to see the slide)
+    _titleController = AnimationController(
+      duration: const Duration(milliseconds: 4000), // SLOWER: Increased to 4 seconds for slower color animation
       vsync: this,
     );
 
-    // Instagram button animation controller
-    _instagramController = AnimationController(
+    // Step 4: Logo move up controller (1-2s)
+    _logoMoveController = AnimationController(
+      duration: const Duration(milliseconds: 1800), // Slightly longer for smoother animation
+      vsync: this,
+    );
+
+    // Step 5: Login form controller
+    _loginFormController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
-    // Phase A: Color Fill Animation (0ms - 1800ms) - Right → Left, slower & smoother
-    // Interval: 0.0 to 1.0 (full duration)
+    // Logo fade animation
+    _logoFadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _logoFadeController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Title fade animation - quick fade in so slide movement is visible
+    _titleFadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _titleController,
+      curve: const Interval(0.0, 0.2, curve: Curves.easeIn), // Quick fade in first 20% of animation
+    ));
+
+    // Color fill animation for "Dating" text (right to left) - happens after slide
     _colorFillAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _mainController,
-      curve: const Interval(0.0, 1.0,
-          curve: Curves.easeOutQuad), // easeOutQuad as per spec
+      parent: _titleController,
+      curve: const Interval(0.2, 1.0, curve: Curves.linear), // SLOWER: Linear for consistent speed, starts at 20% after slide
     ));
 
-    // Phase B: Lift & Shrink Animation (400ms - 1800ms) - starts earlier for smooth motion
-    // Interval: 0.222 to 1.0 (400/1800 to 1800/1800)
-    _liftShrinkAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
+    // Title slide animation (from center to final position below logo)
+    _titleSlideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.4), // Start from logo center area
+      end: const Offset(0.0, 0.0), // End at final position below logo
     ).animate(CurvedAnimation(
-      parent: _mainController,
-      curve: const Interval(0.222, 1.0,
-          curve: Curves.easeInOutCubic), // continuous smooth motion
+      parent: _titleController,
+      curve: Curves.easeOutQuart, // Even smoother curve for visible slide movement
     ));
 
-    // Logo scale: 2.4 → 1.8 (huge initially, still very large finally - 25% shrink)
-    _logoScaleAnimation = Tween<double>(
-      begin: 3.4,
-      end: 2.8,
-    ).animate(_liftShrinkAnimation);
-
-    // Title scale: 1.00 → 0.95
-    _titleScaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(_liftShrinkAnimation);
-
-    // Login form slide animation - adjusted for higher position
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.3), // Start slightly below final position
-      end: const Offset(0.0, 0.0), // End at final position
+    // Logo move up animation - less dramatic movement
+    _logoMoveAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.0),
+      end:
+          const Offset(0.0, -2.5), // Balanced upward movement
     ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutCubic,
+      parent: _logoMoveController,
+      curve: Curves.easeInOutCubic, // Smoother curve for better animation
     ));
 
-    // Instagram button slide up animation
-    _instagramSlideAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.5), // Start slightly below
-      end: const Offset(0.0, 0.0), // End in final position
+    // Title move up animation - moves MORE than logo to get closer
+    // Adjust this value to fine-tune the final position
+    _titleMoveAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.0),
+      end: const Offset(0.0, -4.0), // Smooth upward movement that works with dynamic offset
     ).animate(CurvedAnimation(
-      parent: _instagramController,
-      curve: Curves.easeOutBack, // Bouncy effect
+      parent: _logoMoveController,
+      curve: Curves.easeInOutCubic, // Same smooth curve as logo for synchronized movement
     ));
 
-    // Instagram button fade animation
-    _instagramFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
+    // Login form slide animation - INITIALIZE THIS
+    _loginFormSlideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.3),
+      end: const Offset(0.0, 0.0),
     ).animate(CurvedAnimation(
-      parent: _instagramController,
-      curve: Curves.easeOut,
+      parent: _loginFormController,
+      curve: Curves.easeInOut,
     ));
 
     _startAnimationSequence();
   }
 
   void _startAnimationSequence() async {
-    // Start the main animation immediately
-    _mainController.forward();
+    // Step 1: Logo fade-in (0.8-1s)
+    await _logoFadeController.forward();
 
-    // Wait for main animation to complete, then show login form
-    await Future.delayed(const Duration(milliseconds: 1900));
+    // Step 2: Title appears and starts color animation
+    setState(() {
+      _showTitle = true;
+    });
+    
+    // Start color animation but don't wait for it to complete
+    _titleController.forward();
+    
+    // Step 3: Wait for partial color animation (let color animation run for 2 seconds)
+    await Future.delayed(const Duration(milliseconds: 2000));
+
+    // Step 4: Start upward animation WHILE color is still animating
+    _logoMoveController.forward(); // Don't await, let it run parallel
+    
+    // Wait for the upward animation to complete
+    await Future.delayed(const Duration(milliseconds: 1800));
+
+    // Step 5: Show login form
     setState(() {
       _showLoginForm = true;
     });
-    _slideController.forward();
-
-    // Wait for login form to appear, then animate Instagram button
-    await Future.delayed(const Duration(milliseconds: 400));
-    setState(() {
-      _showInstagramButton = true;
-    });
-    _instagramController.forward();
+    _loginFormController.forward();
   }
 
   @override
   void dispose() {
-    _mainController.dispose();
-    _slideController.dispose();
-    _instagramController.dispose();
+    _logoFadeController.dispose();
+    _titleController.dispose();
+    _logoMoveController.dispose();
+    _loginFormController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     final safeAreaTop = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 25, 25, 25),
+      backgroundColor: const Color.fromARGB(
+          255, 25, 25, 25), // Dark background like previous
       body: Stack(
         children: [
-          // Main header block (Logo + Title) with precise positioning
-          AnimatedBuilder(
-            animation: _mainController,
-            builder: (context, child) {
-              // Calculate exact final position: logo top edge at safe-area + 80dp (much more space above)
-              final logoSize =
-                  100 * _logoScaleAnimation.value; // Current logo size
-              final finalLogoTop =
-                  safeAreaTop + 170; // Target position - generous space above
-              final screenCenter = screenHeight / 2;
+          // Centered logo with animations - moved slightly down initially
+          Center(
+            child: Transform.translate(
+              offset: const Offset(0, -20), // Slightly above center for better initial composition
+              child: SlideTransition(
+                position: _logoMoveAnimation,
+                child: FadeTransition(
+                  opacity: _logoFadeAnimation,
+                  child: SizedBox(
+                    width: 100, // Base size like original - will be scaled larger
+                    height: 100,
+                    child: Transform.scale(
+                      scale: 2.8, // Large scale like your original final size
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
 
-              // Calculate current position - interpolate from center to exact top position
-              final currentLogoTop = screenCenter -
-                  (logoSize / 2) +
-                  (_liftShrinkAnimation.value *
-                      (finalLogoTop - (screenCenter - logoSize / 2)));
-
-              return Positioned(
-                left: 0,
-                right: 0,
-                top: currentLogoTop,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Logo with scale animation - starts huge (2.4×)
-                    Transform.scale(
-                      scale: _logoScaleAnimation.value,
-                      child: SizedBox(
-                        width:
-                            100, // Base size - scaled to 2.4× initially (240px)
-                        height: 100,
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          fit: BoxFit.contain,
+          // Title text below logo
+          if (_showTitle)
+            Center(
+              child: AnimatedBuilder(
+                animation: _logoMoveController,
+                builder: (context, child) {
+                  // Smooth interpolation for text position during upward animation
+                  double dynamicOffset = 120 + (_logoMoveController.value * -80);
+                  
+                  return Transform.translate(
+                    offset: Offset(0, dynamicOffset),
+                    child: SlideTransition(
+                      position: _titleMoveAnimation,
+                      child: SlideTransition(
+                        position: _titleSlideAnimation,
+                        child: FadeTransition(
+                          opacity: _titleFadeAnimation,
+                          child: CustomPaint(
+                            painter: DownDatingTextPainter(_colorFillAnimation.value),
+                            size: const Size(250, 40),
+                          ),
                         ),
                       ),
                     ),
+                  );
+                },
+              ),
+            ),
 
-                    // Dynamic spacing: 25% of current logo height → 20dp fixed finally
-                    SizedBox(
-                      height: (100 * _logoScaleAnimation.value * 0.25) *
-                              (1.0 - _liftShrinkAnimation.value) +
-                          (80 *
-                              _liftShrinkAnimation
-                                  .value), // logoHeight * 0.25 → 20dp fixed
-                    ),
-
-                    // Title with scale and color animation
-                    Transform.scale(
-                      scale: _titleScaleAnimation.value,
-                      child: CustomPaint(
-                        painter:
-                            DownDatingTextPainter(_colorFillAnimation.value),
-                        size: const Size(250, 40),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-
-          // Login form positioned much closer to DownDating title
+          // Login form (appears after animation sequence)
           if (_showLoginForm)
             Positioned(
               left: 32,
               right: 32,
-              top: screenHeight *
-                  0.55, // Move much further down - more space from DownDating title
+              top: screenHeight * 0.50,
               child: SlideTransition(
-                position: _slideAnimation,
+                position: _loginFormSlideAnimation,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Continue with Instagram button - with slide up animation
-                    if (_showInstagramButton)
-                      SlideTransition(
-                        position: _instagramSlideAnimation,
-                        child: FadeTransition(
-                          opacity: _instagramFadeAnimation,
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 56,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(28),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Continue with ',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFFF58529),
-                                          Color(0xFFDD2A7B),
-                                          Color(0xFF8134AF),
-                                          Color(0xFF515BD4),
-                                        ],
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.camera_alt_rounded,
-                                      color: Colors.white,
-                                      size: 12,
-                                    ),
-                                  ),
-                                  const Text(
-                                    ' Instagram',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                    // Continue with Instagram button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const EnterPhoneNumberScreen()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          elevation: 2,
+                          shadowColor: Colors.black.withOpacity(0.1),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Continue with ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFF58529),
+                                    Color(0xFFDD2A7B),
+                                    Color(0xFF8134AF),
+                                    Color(0xFF515BD4),
+                                  ],
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                            ),
+                            const Text(
+                              ' Instagram',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                    ),
 
                     const SizedBox(height: 24),
 
-                    // Use Phone Numberz
-                    // Phone Number button with white border outline
+                    // Use Phone Number button
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -301,15 +325,16 @@ class SplashScreenState extends State<SplashScreen>
                         },
                         style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.white,
+                          foregroundColor:
+                              Colors.white, // White text for dark background
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(28),
                           ),
                           side: const BorderSide(
-                            color: Colors.white,
+                            color: Colors
+                                .white, // White border for dark background
                             width: 1.5,
                           ),
-                          elevation: 0,
                         ),
                         child: const Text(
                           'Use Phone Number',
@@ -320,7 +345,8 @@ class SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+
+                    const SizedBox(height: 80),
 
                     // Divider with "Already a Member?"
                     Row(
@@ -328,7 +354,7 @@ class SplashScreenState extends State<SplashScreen>
                         Expanded(
                           child: Container(
                             height: 0.5,
-                            color: Colors.grey[600],
+                            color: Colors.grey[400],
                           ),
                         ),
                         const Padding(
@@ -346,7 +372,7 @@ class SplashScreenState extends State<SplashScreen>
                         Expanded(
                           child: Container(
                             height: 0.5,
-                            color: Colors.grey[600],
+                            color: Colors.grey[400],
                           ),
                         ),
                       ],
@@ -414,7 +440,7 @@ class SplashScreenState extends State<SplashScreen>
   }
 }
 
-// Custom painter for DownDating text with Right→Left color fill as per updated spec
+// Custom painter for DownDating text with Right→Left color fill animation
 class DownDatingTextPainter extends CustomPainter {
   final double animationValue;
 
@@ -460,7 +486,7 @@ class DownDatingTextPainter extends CustomPainter {
     // Paint "Down" - always white
     downPainter.paint(canvas, Offset(startX, 0));
 
-    // Paint "Dating" with RIGHT → LEFT color fill as per updated spec
+    // Paint "Dating" with RIGHT → LEFT color fill animation
     String datingText = 'Dating';
     List<String> letters = datingText.split('');
 

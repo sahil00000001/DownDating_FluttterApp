@@ -12,7 +12,7 @@ class EnterPhoneNumberScreen extends StatefulWidget {
 class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
   int selectedCountryIndex = 0; // Use index instead of code
   final TextEditingController phoneController = TextEditingController();
-  
+
   // Country options with flags and codes
   final List<Map<String, String>> countries = [
     {'flag': '🇺🇸', 'code': '+1', 'name': 'United States'},
@@ -29,7 +29,7 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final safeAreaTop = MediaQuery.of(context).padding.top;
-    
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 25, 25, 25),
       body: SafeArea(
@@ -38,16 +38,16 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
           child: Column(
             children: [
               const SizedBox(height: 40), // Space at top instead of dots
-              
+
               // Phone icon
               const Icon(
                 Icons.phone_outlined,
                 color: Colors.white,
                 size: 80,
               ),
-              
+
               const SizedBox(height: 40),
-              
+
               // Title
               const Text(
                 'Enter your\nphone number',
@@ -59,9 +59,9 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                   height: 1.2,
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Subtitle
               const Text(
                 'Please enter your valid phone number. We will send\nyou a 4-digit code to verify your account.',
@@ -73,9 +73,9 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                   height: 1.4,
                 ),
               ),
-              
+
               const SizedBox(height: 50),
-              
+
               // Phone number input section
               Container(
                 decoration: BoxDecoration(
@@ -89,7 +89,8 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                   children: [
                     // Country code dropdown
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<int>(
                           value: selectedCountryIndex,
@@ -133,21 +134,22 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                         ),
                       ),
                     ),
-                    
+
                     // Divider
                     Container(
                       height: 25,
                       width: 1,
                       color: Colors.grey[600],
                     ),
-                    
+
                     // Phone number input
                     Expanded(
                       child: TextField(
                         controller: phoneController,
                         keyboardType: TextInputType.number,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly, // Only allow numbers
+                          FilteringTextInputFormatter
+                              .digitsOnly, // Only allow numbers
                         ],
                         style: const TextStyle(
                           color: Colors.white,
@@ -161,16 +163,17 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                             fontSize: 16,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 18),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              
+
               const Spacer(),
-              
+
               // Next button
               Padding(
                 padding: const EdgeInsets.only(bottom: 40.0),
@@ -182,12 +185,14 @@ class EnterPhoneNumberScreenState extends State<EnterPhoneNumberScreen> {
                       if (phoneController.text.isNotEmpty) {
                         // Navigate to OTP verification screen
                         final selectedCountry = countries[selectedCountryIndex];
-                        String fullPhoneNumber = '${selectedCountry['code']} ${phoneController.text}';
-                        
+                        String fullPhoneNumber =
+                            '${selectedCountry['code']} ${phoneController.text}';
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtpVerificationScreen(phoneNumber: fullPhoneNumber),
+                            builder: (context) => OtpVerificationScreen(
+                                phoneNumber: fullPhoneNumber),
                           ),
                         );
                       } else {

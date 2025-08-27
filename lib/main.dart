@@ -20,7 +20,7 @@ class DownDatingApp extends StatelessWidget {
         systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
-    
+
     return MaterialApp(
       title: 'DownDating',
       theme: ThemeData(

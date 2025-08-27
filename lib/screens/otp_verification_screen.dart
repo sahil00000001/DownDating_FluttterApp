@@ -5,17 +5,19 @@ import 'personal_info_flow.dart'; // Import the new flow
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
-  
-  const OtpVerificationScreen({Key? key, required this.phoneNumber}) : super(key: key);
+
+  const OtpVerificationScreen({Key? key, required this.phoneNumber})
+      : super(key: key);
 
   @override
   OtpVerificationScreenState createState() => OtpVerificationScreenState();
 }
 
 class OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  List<TextEditingController> otpControllers = List.generate(4, (index) => TextEditingController());
+  List<TextEditingController> otpControllers =
+      List.generate(4, (index) => TextEditingController());
   List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
-  
+
   int countdown = 42; // Start countdown from 42 seconds
   Timer? timer;
 
@@ -68,7 +70,8 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
   void _navigateToPersonalInfoFlow() {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const PersonalInfoFlow(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const PersonalInfoFlow(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
@@ -98,16 +101,16 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
           child: Column(
             children: [
               const SizedBox(height: 120), // More space from top
-              
+
               // Phone icon
               const Icon(
                 Icons.phone_outlined,
                 color: Colors.white,
                 size: 80,
               ),
-              
+
               const SizedBox(height: 40),
-              
+
               // Timer
               Text(
                 formattedTime,
@@ -117,9 +120,9 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Description text
               const Text(
                 'Type the verification code\nwe\'ve sent you',
@@ -131,9 +134,9 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   height: 1.4,
                 ),
               ),
-              
+
               const SizedBox(height: 60),
-              
+
               // OTP input boxes
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -146,8 +149,8 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: otpControllers[index].text.isNotEmpty 
-                            ? Colors.red 
+                        color: otpControllers[index].text.isNotEmpty
+                            ? Colors.red
                             : Colors.grey[300]!,
                         width: 2,
                       ),
@@ -178,9 +181,9 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   );
                 }),
               ),
-              
+
               const Spacer(),
-              
+
               // Verify button
               Padding(
                 padding: const EdgeInsets.only(bottom: 40.0),
@@ -190,7 +193,9 @@ class OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       // Get complete OTP
-                      String otp = otpControllers.map((controller) => controller.text).join();
+                      String otp = otpControllers
+                          .map((controller) => controller.text)
+                          .join();
                       if (otp.length == 4) {
                         print('OTP entered: $otp');
                         // Navigate to personal info flow instead of next screen

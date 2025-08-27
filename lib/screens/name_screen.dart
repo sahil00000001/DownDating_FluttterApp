@@ -24,8 +24,8 @@ class NameScreenState extends State<NameScreen> {
   }
 
   bool get isFormValid {
-    return firstNameController.text.trim().isNotEmpty && 
-           lastNameController.text.trim().isNotEmpty;
+    return firstNameController.text.trim().isNotEmpty &&
+        lastNameController.text.trim().isNotEmpty;
   }
 
   @override
@@ -35,7 +35,7 @@ class NameScreenState extends State<NameScreen> {
       child: Column(
         children: [
           const SizedBox(height: 60),
-          
+
           // User icon - Centered and Large
           Center(
             child: Container(
@@ -52,9 +52,9 @@ class NameScreenState extends State<NameScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 30),
-          
+
           // Title - Left aligned and larger
           Align(
             alignment: Alignment.centerLeft,
@@ -67,9 +67,9 @@ class NameScreenState extends State<NameScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 40),
-          
+
           // Input fields with reduced width - Left aligned
           Align(
             alignment: Alignment.centerLeft,
@@ -84,9 +84,9 @@ class NameScreenState extends State<NameScreen> {
                     label: 'First name',
                     onSubmitted: (_) => lastNameFocus.requestFocus(),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Last Name Input
                   _buildInputField(
                     controller: lastNameController,
@@ -102,14 +102,15 @@ class NameScreenState extends State<NameScreen> {
               ),
             ),
           ),
-          
+
           const Spacer(),
-          
+
           // Next button - Full width of screen
           Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: AnimatedBuilder(
-              animation: Listenable.merge([firstNameController, lastNameController]),
+              animation:
+                  Listenable.merge([firstNameController, lastNameController]),
               builder: (context, child) {
                 return SizedBox(
                   width: double.infinity,
@@ -117,7 +118,8 @@ class NameScreenState extends State<NameScreen> {
                   child: ElevatedButton(
                     onPressed: isFormValid ? _handleNext : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isFormValid ? Colors.white : Colors.grey[700],
+                      backgroundColor:
+                          isFormValid ? Colors.white : Colors.grey[700],
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(28),
@@ -153,7 +155,7 @@ class NameScreenState extends State<NameScreen> {
         bool hasText = controller.text.isNotEmpty;
         bool isFocused = focusNode.hasFocus;
         bool shouldFloat = hasText || isFocused;
-        
+
         return Container(
           height: 60,
           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -165,7 +167,7 @@ class NameScreenState extends State<NameScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: shouldFloat 
+                    color: shouldFloat
                         ? (hasText ? Colors.red : Colors.white)
                         : Colors.grey[600]!,
                     width: shouldFloat ? 2 : 1,
@@ -190,12 +192,12 @@ class NameScreenState extends State<NameScreen> {
                   ),
                   onChanged: (_) => setState(() {}),
                   onSubmitted: onSubmitted,
-                  textInputAction: label.contains('First') 
-                      ? TextInputAction.next 
+                  textInputAction: label.contains('First')
+                      ? TextInputAction.next
                       : TextInputAction.done,
                 ),
               ),
-              
+
               // Floating Label - On the border when active
               if (shouldFloat)
                 Positioned(
@@ -203,7 +205,8 @@ class NameScreenState extends State<NameScreen> {
                   top: -2, // Moved up a bit
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
-                    color: const Color.fromARGB(255, 25, 25, 25), // Background color to hide border line
+                    color: const Color.fromARGB(255, 25, 25,
+                        25), // Background color to hide border line
                     child: AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 200),
                       style: TextStyle(
@@ -215,7 +218,7 @@ class NameScreenState extends State<NameScreen> {
                     ),
                   ),
                 ),
-              
+
               // Placeholder Label - Inside when not focused/empty
               if (!shouldFloat)
                 Positioned(
@@ -245,9 +248,9 @@ class NameScreenState extends State<NameScreen> {
     // Store the data or pass it to the flow controller
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
-    
+
     print('Name entered: $firstName $lastName');
-    
+
     // Navigate to next screen
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();
     flowState?.nextScreen();

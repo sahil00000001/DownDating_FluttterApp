@@ -14,16 +14,15 @@ class PersonalInfoFlow extends StatefulWidget {
   PersonalInfoFlowState createState() => PersonalInfoFlowState();
 }
 
-class PersonalInfoFlowState extends State<PersonalInfoFlow> 
+class PersonalInfoFlowState extends State<PersonalInfoFlow>
     with TickerProviderStateMixin {
-  
   int currentScreen = 0;
   PageController pageController = PageController();
-  
+
   // Animation controllers for emoji transitions
   late AnimationController _emojiController;
   late Animation<double> _emojiAnimation;
-  
+
   // Screen data
   final List<Map<String, dynamic>> screenData = [
     {'emoji': '✍️', 'screen': const NameScreen()},
@@ -38,12 +37,12 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
   @override
   void initState() {
     super.initState();
-    
+
     _emojiController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
+
     _emojiAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -51,7 +50,7 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
       parent: _emojiController,
       curve: Curves.easeInOut,
     ));
-    
+
     _emojiController.forward();
   }
 
@@ -78,18 +77,20 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
   }
 
   void jumpToScreen(int targetScreen) {
-    if (targetScreen >= 0 && targetScreen < screenData.length && targetScreen != currentScreen) {
+    if (targetScreen >= 0 &&
+        targetScreen < screenData.length &&
+        targetScreen != currentScreen) {
       _emojiController.reset();
       setState(() {
         currentScreen = targetScreen;
       });
-      
+
       pageController.animateToPage(
         targetScreen,
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
-      
+
       _emojiController.forward();
     }
   }
@@ -103,7 +104,7 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
           children: [
             // Progress indicator with dots and emojis
             _buildProgressIndicator(),
-            
+
             // Screen content
             Expanded(
               child: PageView.builder(
@@ -137,8 +138,9 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(screenData.length, (index) {
           bool isActive = index == currentScreen;
-          bool isCompleted = index < currentScreen; // Screens that have been completed
-          
+          bool isCompleted =
+              index < currentScreen; // Screens that have been completed
+
           return GestureDetector(
             onTap: () => jumpToScreen(index),
             child: AnimatedContainer(
@@ -146,13 +148,14 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
               width: isActive ? 40 : 8,
               height: isActive ? 40 : 8,
               decoration: BoxDecoration(
-                color: isActive 
-                    ? Colors.transparent 
+                color: isActive
+                    ? Colors.transparent
                     : (isCompleted ? Colors.white : Colors.grey[600]),
                 borderRadius: BorderRadius.circular(isActive ? 20 : 4),
-                border: isActive ? Border.all(color: Colors.white, width: 2) : null,
+                border:
+                    isActive ? Border.all(color: Colors.white, width: 2) : null,
               ),
-              child: isActive 
+              child: isActive
                   ? Center(
                       child: AnimatedBuilder(
                         animation: _emojiAnimation,
@@ -167,7 +170,7 @@ class PersonalInfoFlowState extends State<PersonalInfoFlow>
                         },
                       ),
                     )
-                  : (isCompleted 
+                  : (isCompleted
                       ? const Icon(
                           Icons.check,
                           color: Color.fromARGB(255, 25, 25, 25),

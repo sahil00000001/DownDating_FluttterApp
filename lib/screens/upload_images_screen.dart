@@ -9,24 +9,23 @@ class UploadImagesScreen extends StatefulWidget {
   UploadImagesScreenState createState() => UploadImagesScreenState();
 }
 
-class UploadImagesScreenState extends State<UploadImagesScreen> 
+class UploadImagesScreenState extends State<UploadImagesScreen>
     with TickerProviderStateMixin {
-  
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   List<String?> uploadedImages = List.filled(6, null);
   int uploadedCount = 0;
 
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -34,7 +33,7 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _animationController.forward();
   }
 
@@ -70,7 +69,7 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
         child: Column(
           children: [
             const SizedBox(height: 60),
-            
+
             // Photo/Cloud icon - Centered and Large
             Center(
               child: Container(
@@ -87,9 +86,9 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 30),
-            
+
             // Title - Left aligned and larger
             Align(
               alignment: Alignment.centerLeft,
@@ -102,9 +101,9 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Description - Left aligned
             Align(
               alignment: Alignment.centerLeft,
@@ -117,9 +116,9 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Image upload grid
             Expanded(
               child: Container(
@@ -139,7 +138,7 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
                 ),
               ),
             ),
-            
+
             // Next button
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0, top: 20.0),
@@ -149,7 +148,8 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
                 child: ElevatedButton(
                   onPressed: isFormValid ? _handleNext : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isFormValid ? Colors.white : Colors.grey[700],
+                    backgroundColor:
+                        isFormValid ? Colors.white : Colors.grey[700],
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(28),
@@ -174,7 +174,7 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
 
   Widget _buildImageUploadBox(int index) {
     bool hasImage = uploadedImages[index] != null;
-    
+
     return GestureDetector(
       onTap: () => _selectImage(index),
       child: AnimatedContainer(
@@ -252,8 +252,9 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
 
   void _handleNext() {
     print('Images uploaded: $uploadedCount');
-    print('Image paths: ${uploadedImages.where((img) => img != null).toList()}');
-    
+    print(
+        'Image paths: ${uploadedImages.where((img) => img != null).toList()}');
+
     // This would be the end of the personal info flow
     // Navigate to completion screen or next major flow
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();

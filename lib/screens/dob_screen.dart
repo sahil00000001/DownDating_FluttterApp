@@ -9,16 +9,14 @@ class DobScreen extends StatefulWidget {
   DobScreenState createState() => DobScreenState();
 }
 
-class DobScreenState extends State<DobScreen> 
-    with TickerProviderStateMixin {
-  
+class DobScreenState extends State<DobScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   final TextEditingController dayController = TextEditingController();
   final TextEditingController monthController = TextEditingController();
   final TextEditingController yearController = TextEditingController();
-  
+
   final FocusNode dayFocus = FocusNode();
   final FocusNode monthFocus = FocusNode();
   final FocusNode yearFocus = FocusNode();
@@ -26,12 +24,12 @@ class DobScreenState extends State<DobScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -39,7 +37,7 @@ class DobScreenState extends State<DobScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _animationController.forward();
   }
 
@@ -57,11 +55,11 @@ class DobScreenState extends State<DobScreen>
 
   bool get isFormValid {
     return dayController.text.trim().isNotEmpty &&
-           monthController.text.trim().isNotEmpty &&
-           yearController.text.trim().isNotEmpty &&
-           dayController.text.trim().length == 2 &&
-           monthController.text.trim().length == 2 &&
-           yearController.text.trim().length == 4;
+        monthController.text.trim().isNotEmpty &&
+        yearController.text.trim().isNotEmpty &&
+        dayController.text.trim().length == 2 &&
+        monthController.text.trim().length == 2 &&
+        yearController.text.trim().length == 4;
   }
 
   @override
@@ -73,7 +71,7 @@ class DobScreenState extends State<DobScreen>
         child: Column(
           children: [
             const SizedBox(height: 60),
-            
+
             // Birthday cake icon - Centered and Large
             Center(
               child: Container(
@@ -90,9 +88,9 @@ class DobScreenState extends State<DobScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 50), // Increased from 30 to move title down
-            
+
             // Title - Left aligned and larger
             Align(
               alignment: Alignment.centerLeft,
@@ -105,9 +103,9 @@ class DobScreenState extends State<DobScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Date picker fields - Left aligned with simplified design
             Align(
               alignment: Alignment.centerLeft,
@@ -126,10 +124,10 @@ class DobScreenState extends State<DobScreen>
                         onSubmitted: (_) => monthFocus.requestFocus(),
                       ),
                     ),
-                    
+
                     const SizedBox(width: 16),
-                    
-                    // Month field  
+
+                    // Month field
                     Expanded(
                       flex: 2,
                       child: _buildSimpleDateField(
@@ -140,9 +138,9 @@ class DobScreenState extends State<DobScreen>
                         onSubmitted: (_) => yearFocus.requestFocus(),
                       ),
                     ),
-                    
+
                     const SizedBox(width: 16),
-                    
+
                     // Year field
                     Expanded(
                       flex: 3,
@@ -162,14 +160,15 @@ class DobScreenState extends State<DobScreen>
                 ),
               ),
             ),
-            
+
             const Spacer(),
-            
+
             // Next button
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
               child: AnimatedBuilder(
-                animation: Listenable.merge([dayController, monthController, yearController]),
+                animation: Listenable.merge(
+                    [dayController, monthController, yearController]),
                 builder: (context, child) {
                   return SizedBox(
                     width: double.infinity,
@@ -177,7 +176,8 @@ class DobScreenState extends State<DobScreen>
                     child: ElevatedButton(
                       onPressed: isFormValid ? _handleNext : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isFormValid ? Colors.white : Colors.grey[700],
+                        backgroundColor:
+                            isFormValid ? Colors.white : Colors.grey[700],
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
@@ -214,14 +214,14 @@ class DobScreenState extends State<DobScreen>
       builder: (context, child) {
         bool hasText = controller.text.isNotEmpty;
         bool isFocused = focusNode.hasFocus;
-        
+
         return Container(
           height: 56,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: hasText 
-                  ? Colors.red 
+              color: hasText
+                  ? Colors.red
                   : (isFocused ? Colors.white : Colors.grey[600]!),
               width: hasText || isFocused ? 2 : 1,
             ),
@@ -272,9 +272,9 @@ class DobScreenState extends State<DobScreen>
     final day = dayController.text.trim();
     final month = monthController.text.trim();
     final year = yearController.text.trim();
-    
+
     print('DOB entered: $day/$month/$year');
-    
+
     // Navigate to next screen
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();
     flowState?.nextScreen();

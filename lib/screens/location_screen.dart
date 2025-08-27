@@ -8,24 +8,23 @@ class LocationScreen extends StatefulWidget {
   LocationScreenState createState() => LocationScreenState();
 }
 
-class LocationScreenState extends State<LocationScreen> 
+class LocationScreenState extends State<LocationScreen>
     with TickerProviderStateMixin {
-  
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   final TextEditingController locationController = TextEditingController();
   final FocusNode locationFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -33,7 +32,7 @@ class LocationScreenState extends State<LocationScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _animationController.forward();
   }
 
@@ -58,7 +57,7 @@ class LocationScreenState extends State<LocationScreen>
         child: Column(
           children: [
             const SizedBox(height: 60),
-            
+
             // Location icon - Centered and Large
             Center(
               child: Container(
@@ -75,9 +74,9 @@ class LocationScreenState extends State<LocationScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 30),
-            
+
             // Title - Left aligned and larger
             Align(
               alignment: Alignment.centerLeft,
@@ -90,9 +89,9 @@ class LocationScreenState extends State<LocationScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Location input field - Left aligned
             Align(
               alignment: Alignment.centerLeft,
@@ -101,9 +100,9 @@ class LocationScreenState extends State<LocationScreen>
                 child: _buildLocationField(),
               ),
             ),
-            
+
             const Spacer(),
-            
+
             // Next button
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
@@ -116,7 +115,8 @@ class LocationScreenState extends State<LocationScreen>
                     child: ElevatedButton(
                       onPressed: isFormValid ? _handleNext : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isFormValid ? Colors.white : Colors.grey[700],
+                        backgroundColor:
+                            isFormValid ? Colors.white : Colors.grey[700],
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
@@ -148,7 +148,7 @@ class LocationScreenState extends State<LocationScreen>
         bool hasText = locationController.text.isNotEmpty;
         bool isFocused = locationFocus.hasFocus;
         bool shouldFloat = hasText || isFocused;
-        
+
         return Container(
           height: 60,
           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -160,7 +160,7 @@ class LocationScreenState extends State<LocationScreen>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: shouldFloat 
+                    color: shouldFloat
                         ? (hasText ? Colors.red : Colors.white)
                         : Colors.grey[600]!,
                     width: shouldFloat ? 2 : 1,
@@ -203,7 +203,7 @@ class LocationScreenState extends State<LocationScreen>
                   },
                 ),
               ),
-              
+
               // Floating Label - On the border when active
               if (shouldFloat)
                 Positioned(
@@ -223,7 +223,7 @@ class LocationScreenState extends State<LocationScreen>
                     ),
                   ),
                 ),
-              
+
               // Placeholder Label - Inside when not focused/empty
               if (!shouldFloat)
                 Positioned(
@@ -252,7 +252,7 @@ class LocationScreenState extends State<LocationScreen>
   void _handleNext() {
     final location = locationController.text.trim();
     print('Location entered: $location');
-    
+
     // Navigate to next screen
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();
     flowState?.nextScreen();

@@ -9,12 +9,11 @@ class LookingToDateScreen extends StatefulWidget {
   LookingToDateScreenState createState() => LookingToDateScreenState();
 }
 
-class LookingToDateScreenState extends State<LookingToDateScreen> 
+class LookingToDateScreenState extends State<LookingToDateScreen>
     with TickerProviderStateMixin {
-  
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   String? selectedPreference;
 
   final List<Map<String, dynamic>> datingOptions = [
@@ -25,7 +24,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
     },
     {
       'value': 'man',
-      'label': 'Man', 
+      'label': 'Man',
       'icon': Icons.male,
     },
     {
@@ -38,12 +37,12 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -51,7 +50,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _animationController.forward();
   }
 
@@ -76,7 +75,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
         child: Column(
           children: [
             const SizedBox(height: 60),
-            
+
             // Smiley face icon - Centered and Large
             Center(
               child: Container(
@@ -93,9 +92,9 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 30),
-            
+
             // Title - Left aligned and larger
             Align(
               alignment: Alignment.centerLeft,
@@ -108,15 +107,15 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Dating preference options
             ...datingOptions.asMap().entries.map((entry) {
               int index = entry.key;
               Map<String, dynamic> option = entry.value;
               bool isSelected = option['value'] == selectedPreference;
-              
+
               return AnimatedContainer(
                 duration: Duration(milliseconds: 200 + (index * 100)),
                 margin: const EdgeInsets.only(bottom: 16),
@@ -128,9 +127,9 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                 ),
               );
             }).toList(),
-            
+
             const Spacer(),
-            
+
             // Next button
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
@@ -143,8 +142,8 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                   child: ElevatedButton(
                     onPressed: selectedPreference != null ? _handleNext : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedPreference != null 
-                          ? Colors.white 
+                      backgroundColor: selectedPreference != null
+                          ? Colors.white
                           : Colors.grey[700],
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -195,7 +194,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isSelected 
+                color: isSelected
                     ? Colors.black.withOpacity(0.1)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
@@ -206,9 +205,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                 size: 24,
               ),
             ),
-            
             const SizedBox(width: 16),
-            
             Expanded(
               child: Text(
                 label,
@@ -219,7 +216,6 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                 ),
               ),
             ),
-            
             if (isSelected)
               AnimatedScale(
                 scale: isSelected ? 1.0 : 0.0,
@@ -230,7 +226,6 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
                   size: 24,
                 ),
               ),
-            
             if (value == 'both' && !isSelected)
               Icon(
                 Icons.arrow_forward_ios,
@@ -245,7 +240,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
 
   void _handleNext() {
     print('Dating preference selected: $selectedPreference');
-    
+
     // Navigate to next screen
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();
     flowState?.nextScreen();

@@ -8,9 +8,8 @@ class GenderScreen extends StatefulWidget {
   GenderScreenState createState() => GenderScreenState();
 }
 
-class GenderScreenState extends State<GenderScreen> 
+class GenderScreenState extends State<GenderScreen>
     with TickerProviderStateMixin {
-  
   String? selectedGender;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -24,7 +23,7 @@ class GenderScreenState extends State<GenderScreen>
     },
     {
       'value': 'man',
-      'label': 'Man', 
+      'label': 'Man',
       'icon': Icons.male,
       'isSelected': false,
     },
@@ -39,12 +38,12 @@ class GenderScreenState extends State<GenderScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -52,7 +51,7 @@ class GenderScreenState extends State<GenderScreen>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
-    
+
     _animationController.forward();
   }
 
@@ -65,7 +64,7 @@ class GenderScreenState extends State<GenderScreen>
   void _selectGender(String gender) {
     setState(() {
       selectedGender = gender;
-      
+
       // Update selection status
       for (var option in genderOptions) {
         option['isSelected'] = option['value'] == gender;
@@ -82,7 +81,7 @@ class GenderScreenState extends State<GenderScreen>
         child: Column(
           children: [
             const SizedBox(height: 60),
-            
+
             // Gender icon with animation - Centered and Large
             Center(
               child: AnimatedContainer(
@@ -90,7 +89,7 @@ class GenderScreenState extends State<GenderScreen>
                 width: 140,
                 height: 140,
                 decoration: BoxDecoration(
-                  color: selectedGender != null 
+                  color: selectedGender != null
                       ? Colors.white.withOpacity(0.2)
                       : Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
@@ -106,9 +105,9 @@ class GenderScreenState extends State<GenderScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 30),
-            
+
             // Title - Left aligned and larger
             Align(
               alignment: Alignment.centerLeft,
@@ -121,15 +120,15 @@ class GenderScreenState extends State<GenderScreen>
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Gender options
             ...genderOptions.asMap().entries.map((entry) {
               int index = entry.key;
               Map<String, dynamic> option = entry.value;
               bool isSelected = option['value'] == selectedGender;
-              
+
               return AnimatedContainer(
                 duration: Duration(milliseconds: 200 + (index * 100)),
                 margin: const EdgeInsets.only(bottom: 16),
@@ -141,9 +140,9 @@ class GenderScreenState extends State<GenderScreen>
                 ),
               );
             }).toList(),
-            
+
             const Spacer(),
-            
+
             // Next button
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
@@ -156,8 +155,8 @@ class GenderScreenState extends State<GenderScreen>
                   child: ElevatedButton(
                     onPressed: selectedGender != null ? _handleNext : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedGender != null 
-                          ? Colors.white 
+                      backgroundColor: selectedGender != null
+                          ? Colors.white
                           : Colors.grey[700],
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -208,7 +207,7 @@ class GenderScreenState extends State<GenderScreen>
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isSelected 
+                color: isSelected
                     ? Colors.white.withOpacity(0.2)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
@@ -219,9 +218,7 @@ class GenderScreenState extends State<GenderScreen>
                 size: 24,
               ),
             ),
-            
             const SizedBox(width: 16),
-            
             Expanded(
               child: Text(
                 label,
@@ -232,7 +229,6 @@ class GenderScreenState extends State<GenderScreen>
                 ),
               ),
             ),
-            
             if (isSelected)
               AnimatedScale(
                 scale: isSelected ? 1.0 : 0.0,
@@ -243,7 +239,6 @@ class GenderScreenState extends State<GenderScreen>
                   size: 24,
                 ),
               ),
-            
             if (value == 'other' && !isSelected)
               Icon(
                 Icons.arrow_forward_ios,
@@ -271,7 +266,7 @@ class GenderScreenState extends State<GenderScreen>
 
   void _handleNext() {
     print('Gender selected: $selectedGender');
-    
+
     // Navigate to next screen
     final flowState = context.findAncestorStateOfType<PersonalInfoFlowState>();
     flowState?.nextScreen();
