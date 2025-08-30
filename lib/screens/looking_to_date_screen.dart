@@ -96,9 +96,9 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
             const SizedBox(height: 30),
 
             // Title - Left aligned and larger
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'You looking to date',
                 style: TextStyle(
                   color: Colors.white,
@@ -220,7 +220,7 @@ class LookingToDateScreenState extends State<LookingToDateScreen>
               AnimatedScale(
                 scale: isSelected ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
-                child: Icon(
+                child: const Icon(
                   Icons.check_circle,
                   color: Colors.black,
                   size: 24,

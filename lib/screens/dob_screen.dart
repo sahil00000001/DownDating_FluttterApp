@@ -92,9 +92,9 @@ class DobScreenState extends State<DobScreen> with TickerProviderStateMixin {
             const SizedBox(height: 50), // Increased from 30 to move title down
 
             // Title - Left aligned and larger
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'My DOB is',
                 style: TextStyle(
                   color: Colors.white,

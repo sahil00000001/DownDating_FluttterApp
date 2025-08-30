@@ -78,9 +78,9 @@ class LocationScreenState extends State<LocationScreen>
             const SizedBox(height: 30),
 
             // Title - Left aligned and larger
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'You live around',
                 style: TextStyle(
                   color: Colors.white,

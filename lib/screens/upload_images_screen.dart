@@ -1,6 +1,7 @@
 // TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'personal_info_flow.dart';
+import 'interests_selection_screen.dart';
 
 class UploadImagesScreen extends StatefulWidget {
   const UploadImagesScreen({Key? key}) : super(key: key);
@@ -90,9 +91,9 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
             const SizedBox(height: 30),
 
             // Title - Left aligned and larger
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'Show us how you look',
                 style: TextStyle(
                   color: Colors.white,
@@ -251,9 +252,16 @@ class UploadImagesScreenState extends State<UploadImagesScreen>
   }
 
   void _handleNext() {
-    print('Images uploaded: $uploadedCount');
-    print(
-        'Image paths: ${uploadedImages.where((img) => img != null).toList()}');
+   print('Images uploaded: $uploadedCount');
+  print('Image paths: ${uploadedImages.where((img) => img != null).toList()}');
+
+  // Navigate to Interests Selection Screen
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const InterestsSelectionScreen(),
+    ),
+  );
 
     // This would be the end of the personal info flow
     // Navigate to completion screen or next major flow

@@ -20,3 +20,5 @@ flutter:                    # ← Only ONE flutter: section
   uses-material-design: true
   assets:                   # ← Add assets here under existing flutter:
     - assets/images/
+    - assets/experts/
+    - assets/merchandise/

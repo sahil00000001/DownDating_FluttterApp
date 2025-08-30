@@ -92,9 +92,9 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
             const SizedBox(height: 50),
 
             // Title - Left aligned and larger
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
-              child: const Text(
+              child: Text(
                 'Time of birth',
                 style: TextStyle(
                   color: Colors.white,
@@ -377,7 +377,7 @@ class TimeOfBirthScreenState extends State<TimeOfBirthScreen>
         child: Center(
           child: Text(
             period,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
               fontWeight: FontWeight.w600,
